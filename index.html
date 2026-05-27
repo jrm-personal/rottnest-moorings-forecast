@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rottnest Island Moorings – 7-Day Forecast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Source Sans 3', Helvetica, Arial, sans-serif;
+    background: #E6F8F8; color: #103449; line-height: 1.5;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  header {
+    text-align: center; padding: 28px 20px 22px;
+    background: linear-gradient(135deg, #073746 0%, #103449 40%, #0A4F65 100%);
+    border-radius: 16px; margin-bottom: 20px;
+    box-shadow: 0 4px 24px rgba(16,52,73,0.25);
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,184,190,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(253,188,63,0.06) 0%, transparent 50%);
+  }
+  header * { position: relative; }
+  header h1 { font-size: 1.7rem; color: #fff; margin-bottom: 4px; font-weight: 700; }
+  header h1 span { color: #00B8BE; }
+  header .sub { font-size: 0.85rem; color: #a0d4dc; font-weight: 400; }
+  header .sub strong { color: #FDBC3F; }
+  .sponsor-bar {
+    margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .sponsor-bar a {
+    display: inline-flex; align-items: center; padding: 6px 14px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; text-decoration: none; transition: background 0.2s;
+  }
+  .sponsor-bar a:hover { background: rgba(255,255,255,0.18); }
+  .sponsor-bar img { height: 26px; max-width: 140px; object-fit: contain; filter: brightness(0) invert(1); }
+  .sponsor-label {
+    font-size: 0.68rem; color: rgba(255,255,255,0.5); text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 600; margin-bottom: 4px;
+  }
+
+  .scale-bar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .scale-chip {
+    padding: 5px 14px; border-radius: 20px; font-size: 0.72rem;
+    font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    box-shadow: 0 1px 4px rgba(16,52,73,0.1);
+  }
+
+  .day-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
+
+  .day-card {
+    background: #FFFFFF; border-radius: 14px; overflow: hidden;
+    border: 1px solid rgba(16,52,73,0.08);
+    box-shadow: 0 2px 16px rgba(16,52,73,0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .day-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(16,52,73,0.12); }
+  .tier-border-calm { border-top: 4px solid #27ae60; }
+  .tier-border-comfortable { border-top: 4px solid #00B8BE; }
+  .tier-border-moderate { border-top: 4px solid #FDBC3F; }
+  .tier-border-rough { border-top: 4px solid #D35D4F; }
+
+  .day-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 12px 16px 8px; border-bottom: 1px solid rgba(16,52,73,0.06);
+  }
+  .day-name { font-weight: 700; font-size: 1.05rem; color: #103449; }
+  .day-date { font-size: 0.78rem; color: #706356; font-weight: 500; }
+
+  .day-summary { padding: 12px 16px; }
+  .compass-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .wind-stats { flex: 1; }
+  .stat-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .stat-label { font-size: 0.7rem; color: #706356; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .stat-value { font-size: 0.85rem; font-weight: 700; color: #103449; }
+
+  .wind-bar-wrap { margin-bottom: 10px; }
+  .wind-bar-bg { height: 10px; background: #E9F0F8; border-radius: 5px; overflow: hidden; }
+  .wind-bar-fill {
+    height: 100%; border-radius: 5px;
+    background: linear-gradient(90deg, #27ae60 0%, #00B8BE 30%, #FDBC3F 60%, #D35D4F 85%, #B83230 100%);
+  }
+  .wind-bar-marks { position: relative; height: 14px; margin-top: 3px; font-size: 9px; color: #706356; }
+  .wind-bar-marks span { position: absolute; transform: translateX(-50%); }
+
+  .weather-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem; margin-bottom: 5px; flex-wrap: wrap; gap: 4px; color: #103449;
+  }
+  .weather-icon { margin-right: 4px; }
+  .rain-pill { padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+  .rain-none { background: #E9F0F8; color: #706356; }
+  .rain-light { background: #E6F8F8; color: #09768D; }
+  .rain-med { background: #c0eaec; color: #073746; }
+  .rain-heavy { background: #F8DDD8; color: #C04030; }
+
+  .marine-line { font-size: 0.72rem; color: #09768D; padding: 5px 0 2px; border-top: 1px solid rgba(16,52,73,0.06); font-weight: 500; }
+
+  .bay-ratings { padding: 10px 16px 8px; border-top: 1px solid rgba(16,52,73,0.06); background: #FAFCFD; }
+  .bay-ratings-header { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #09768D; margin-bottom: 6px; font-weight: 700; }
+  .bay-strip { display: flex; flex-wrap: wrap; gap: 5px; }
+  .bay-chip {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 8px; font-size: 0.68rem; font-weight: 600;
+    box-shadow: 0 1px 3px rgba(16,52,73,0.08);
+  }
+  .bay-rank { font-size: 0.6rem; opacity: 0.7; }
+  .bay-chip-name { font-weight: 700; }
+  .bay-chip-tier { font-size: 0.6rem; opacity: 0.8; }
+
+  /* ── HEATMAP ────────────────────────────────────────────────── */
+  .heatmap-wrap {
+    border-top: 1px solid rgba(16,52,73,0.06);
+    padding: 10px 12px 12px;
+  }
+  .heatmap-header {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px;
+    color: #09768D; font-weight: 700; margin-bottom: 6px;
+  }
+  .heatmap-scroll { overflow-x: auto; }
+  .heatmap {
+    width: 100%; border-collapse: separate; border-spacing: 2px;
+    font-size: 0.62rem;
+  }
+  .heatmap th {
+    padding: 4px 4px; font-weight: 700; color: #103449;
+    text-align: center; white-space: nowrap; font-size: 0.6rem;
+    background: #F0F8F8; border-radius: 3px;
+  }
+  .heatmap th.hm-time, .heatmap th.hm-wind, .heatmap th.hm-swell-h, .heatmap th.hm-fc-h { text-align: left; color: #706356; }
+  .heatmap td { padding: 3px 2px; text-align: center; white-space: nowrap; }
+  .heatmap td.hm-time { font-weight: 600; color: #706356; text-align: left; font-size: 0.62rem; }
+  .heatmap td.hm-wind { color: #103449; font-weight: 600; text-align: left; font-size: 0.62rem; white-space: nowrap; }
+  .heatmap td.hm-swell { color: #09768D; font-weight: 600; text-align: left; font-size: 0.6rem; white-space: nowrap; }
+  .heatmap td.hm-fc {
+    text-align: left; padding: 2px 4px; white-space: nowrap;
+    display: flex; align-items: center; gap: 3px; min-height: 22px;
+  }
+  .wx-icon { width: 20px; height: 20px; flex-shrink: 0; vertical-align: middle; }
+  .fc-rain { font-size: 0.55rem; color: #0277bd; font-weight: 700; }
+  .hm-arrow { color: #09768D; }
+  .hm-cell {
+    border-radius: 4px; font-weight: 700; font-size: 0.55rem;
+    letter-spacing: 0.3px; min-width: 44px;
+  }
+  .hm-night td.hm-time, .hm-night td.hm-wind, .hm-night td.hm-swell { opacity: 0.6; }
+
+  /* ── Guide section ──────────────────────────────────────────── */
+  .guide-section {
+    margin-top: 24px; padding: 22px; background: #FFFFFF; border-radius: 14px;
+    border: 1px solid rgba(16,52,73,0.08); box-shadow: 0 2px 16px rgba(16,52,73,0.07);
+  }
+  .guide-section h2 { font-size: 1.15rem; color: #103449; margin-bottom: 4px; font-weight: 700; }
+  .guide-section > p { font-size: 0.78rem; color: #706356; margin-bottom: 16px; }
+  .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .guide-card {
+    background: #FAFCFD; border-radius: 10px; padding: 14px;
+    border: 1px solid rgba(16,52,73,0.06); transition: box-shadow 0.15s;
+  }
+  .guide-card:hover { box-shadow: 0 4px 14px rgba(16,52,73,0.08); }
+  .guide-card-name { font-weight: 700; color: #103449; font-size: 0.95rem; margin-bottom: 2px; }
+  .guide-card-type { font-size: 0.7rem; color: #09768D; font-weight: 600; margin-bottom: 4px; }
+  .guide-card-desc { font-size: 0.75rem; color: #706356; margin-bottom: 8px; }
+  .guide-dirs { display: flex; gap: 10px; flex-wrap: wrap; }
+  .dir-best { font-size: 0.68rem; padding: 3px 10px; border-radius: 6px; background: rgba(0,184,190,0.1); color: #09768D; font-weight: 600; }
+  .dir-worst { font-size: 0.68rem; padding: 3px 10px; border-radius: 6px; background: rgba(211,93,79,0.1); color: #C04030; font-weight: 600; }
+
+  /* ── Threshold section ──────────────────────────────────────── */
+  .threshold-section {
+    margin-top: 24px; padding: 22px; background: #FFFFFF; border-radius: 14px;
+    border: 1px solid rgba(16,52,73,0.08); box-shadow: 0 2px 16px rgba(16,52,73,0.07);
+  }
+  .threshold-section h2 { font-size: 1.15rem; color: #103449; margin-bottom: 4px; font-weight: 700; }
+  .threshold-section > p { font-size: 0.78rem; color: #706356; margin-bottom: 16px; }
+  .threshold-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 600px) { .threshold-grid { grid-template-columns: repeat(2, 1fr); } }
+  .threshold-card { padding: 14px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(16,52,73,0.08); }
+  .threshold-card .label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; opacity: 0.9; }
+  .threshold-card .value { font-size: 1.25rem; font-weight: 800; margin: 4px 0; }
+  .threshold-card .desc { font-size: 0.7rem; opacity: 0.85; }
+
+  footer {
+    margin-top: 24px; text-align: center; font-size: 0.72rem; color: #706356; padding: 18px;
+    background: #FFFFFF; border-radius: 14px;
+    border: 1px solid rgba(16,52,73,0.08); box-shadow: 0 2px 16px rgba(16,52,73,0.07);
+  }
+  footer a { color: #09768D; text-decoration: none; font-weight: 600; }
+  footer a:hover { text-decoration: underline; color: #00B8BE; }
+  .footer-logos {
+    display: flex; justify-content: center; align-items: center; gap: 20px;
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(16,52,73,0.08);
+  }
+  .footer-logos a { display: inline-flex; align-items: center; }
+  .footer-logos img { height: 22px; max-width: 120px; object-fit: contain; opacity: 0.6; transition: opacity 0.2s; }
+  .footer-logos img:hover { opacity: 1; }
+  .footer-logos .sep { color: rgba(16,52,73,0.2); font-size: 1.2rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>⚓ Rottnest Island <span>Moorings Forecast</span></h1>
+    <div class="sub">7-day bay conditions · Perth Local Waters marine forecast · <strong>wind speeds in knots</strong></div>
+    <div class="sponsor-label">Sponsored by</div>
+    <div class="sponsor-bar">
+      <a href="https://www.superiorit.com.au/" target="_blank" title="Superior IT – Perth's Leading Managed IT Support">
+        <img src="https://cdn.prod.website-files.com/6389672804aa2669e29a4baa/693fc6f82bbe7d91a2dd0751_Asset%2024.svg" alt="Superior IT">
+      </a>
+      <a href="https://www.defendersuite.com/" target="_blank" title="DefenderSuite – Cybersecurity & Compliance">
+        <img src="https://cdn.prod.website-files.com/6389672804aa2669e29a4baa/69b7d67b6fc251b14e53a2cf_01%20DefenderSuite%20Logo.png" alt="DefenderSuite">
+      </a>
+    </div>
+  </header>
+
+  <div class="scale-bar">
+    <span class="scale-chip" style="background:#27ae60; color:#fff;">Calm ≤7 kt</span>
+    <span class="scale-chip" style="background:#00B8BE; color:#073746;">Comfortable 8–12 kt</span>
+    <span class="scale-chip" style="background:#FDBC3F; color:#5A4200;">Moderate 13–18 kt</span>
+    <span class="scale-chip" style="background:#D35D4F; color:#fff;">Rough 19+ kt</span>
+  </div>
+
+  <div class="day-grid">
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Today</div>
+        <div class="day-date">Mon 26 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(0 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">9 kt N</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">18 kt N</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:51%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">☀️</span>Mostly sunny</span><span>15–22°C</span><span><span class="rain-pill rain-none">0.0 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: W/WSW 1.0–1.4m · Seas: 1-1.5m → 1m</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">COMFY</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Thomson</th><th class="hm-bay">Stark</th><th class="hm-bay">Longreach</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 4kt N</td><td class="hm-swell">→ 1.4m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 6kt N</td><td class="hm-swell">→ 1.3m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 16kt N</td><td class="hm-swell">→ 1.2m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#FDBC3F"/><g stroke="#FDBC3F" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 18kt N</td><td class="hm-swell">→ 1.1m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#FDBC3F"/><g stroke="#FDBC3F" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 17kt N</td><td class="hm-swell">→ 1.0m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><circle cx="10" cy="10" r="4.5" fill="#FDBC3F"/><g stroke="#FDBC3F" stroke-width="1.5" stroke-linecap="round"><line x1="10" y1="2" x2="10" y2="4.5"/><line x1="10" y1="15.5" x2="10" y2="18"/><line x1="2" y1="10" x2="4.5" y2="10"/><line x1="15.5" y1="10" x2="18" y2="10"/></g><path d="M10 16 Q10 13 13 13 Q13 10 17 10 Q21 10 21 14 Q24 14 24 17 Q24 20 21 20 H11 Q8 20 8 17 Q8 16 10 16Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 12kt NNW</td><td class="hm-swell">→ 1.0m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><circle cx="10" cy="10" r="4.5" fill="#FDBC3F"/><g stroke="#FDBC3F" stroke-width="1.5" stroke-linecap="round"><line x1="10" y1="2" x2="10" y2="4.5"/><line x1="10" y1="15.5" x2="10" y2="18"/><line x1="2" y1="10" x2="4.5" y2="10"/><line x1="15.5" y1="10" x2="18" y2="10"/></g><path d="M10 16 Q10 13 13 13 Q13 10 17 10 Q21 10 21 14 Q24 14 24 17 Q24 20 21 20 H11 Q8 20 8 17 Q8 16 10 16Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 6kt N</td><td class="hm-swell">→ 1.0m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 3kt N</td><td class="hm-swell">→ 1.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Tomorrow</div>
+        <div class="day-date">Tue 27 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(0 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">17 kt N</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">30 kt NW</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:86%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">⛈️</span>Showers, thunderstorm PM</span><span>17–21°C</span><span><span class="rain-pill rain-med">7.7 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: W 1.0–2.0m · Seas: ~1m → 1.5-2.5m</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">ROUGH</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">Thomson</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Longreach</th><th class="hm-bay">Stark</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 4kt N</td><td class="hm-swell">→ 1.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 8kt NNE</td><td class="hm-swell">→ 1.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 16kt NNE</td><td class="hm-swell">→ 1.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><circle cx="11" cy="9" r="4" fill="#FDBC3F"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#90a4ae"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 20kt N</td><td class="hm-swell">→ 1.1m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 12 Q7 9 10 9 Q10 6 14 6 Q18 6 18 10 Q21 10 21 13 Q21 16 18 16 H8 Q5 16 5 13 Q5 12 7 12Z" fill="#78909c"/><line x1="9" y1="18" x2="8" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="18" x2="13" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.2mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 23kt NNW</td><td class="hm-swell">→ 1.4m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">3.7mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 27kt NW</td><td class="hm-swell">→ 1.7m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#455a64"/><polygon points="14,13 11,18 13,18 11,23 17,16 14,16 16,13" fill="#FDBC3F"/><line x1="8" y1="16" x2="7" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="16" x2="18" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.8mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 30kt NW</td><td class="hm-swell">→ 1.9m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.0mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 22kt WNW</td><td class="hm-swell">→ 2.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Wed</div>
+        <div class="day-date">Wed 28 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(292.5 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">10 kt WNW</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">18 kt WNW</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:51%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">🌦️</span>Showers easing, wind easing</span><span>17–20°C</span><span><span class="rain-pill rain-med">4.1 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: W/WSW 1.5–2.5m · Seas: 1.5-2.5m → <1m</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">MOD</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">MOD</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Thomson</th><th class="hm-bay">Catherine</th><th class="hm-bay">Longreach</th><th class="hm-bay">Porpoise</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Stark</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 15kt WNW</td><td class="hm-swell">→ 2.1m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.9mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 15kt WNW</td><td class="hm-swell">→ 2.4m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.3mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 18kt WNW</td><td class="hm-swell">→ 2.3m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.6mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 15kt WSW</td><td class="hm-swell">→ 2.0m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 22"><circle cx="10" cy="8" r="3" fill="#FDBC3F" opacity="0.5"/><path d="M7 14 Q7 11 10 11 Q10 8 14 8 Q18 8 18 12 Q21 12 21 15 Q21 18 18 18 H8 Q5 18 5 15 Q5 14 7 14Z" fill="#78909c"/></svg><span class="fc-rain">0.3mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 12kt SW</td><td class="hm-swell">→ 1.7m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 22"><circle cx="10" cy="8" r="3" fill="#FDBC3F" opacity="0.5"/><path d="M7 14 Q7 11 10 11 Q10 8 14 8 Q18 8 18 12 Q21 12 21 15 Q21 18 18 18 H8 Q5 18 5 15 Q5 14 7 14Z" fill="#78909c"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 9kt SSW</td><td class="hm-swell">→ 1.6m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><circle cx="10" cy="10" r="4.5" fill="#FDBC3F"/><g stroke="#FDBC3F" stroke-width="1.5" stroke-linecap="round"><line x1="10" y1="2" x2="10" y2="4.5"/><line x1="10" y1="15.5" x2="10" y2="18"/><line x1="2" y1="10" x2="4.5" y2="10"/><line x1="15.5" y1="10" x2="18" y2="10"/></g><path d="M10 16 Q10 13 13 13 Q13 10 17 10 Q21 10 21 14 Q24 14 24 17 Q24 20 21 20 H11 Q8 20 8 17 Q8 16 10 16Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 5kt S</td><td class="hm-swell">→ 1.5m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 3kt SSE</td><td class="hm-swell">→ 1.5m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Thu</div>
+        <div class="day-date">Thu 29 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(112.5 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">4 kt ESE</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">7 kt E</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:20%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">🌧️</span>Showers, light winds</span><span>15–19°C</span><span><span class="rain-pill rain-med">3.0 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: SW/WSW 1.6–2.5m · Seas: <1m</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">COMFY</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Longreach</th><th class="hm-bay">Thomson</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Stark</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">↖</span> 3kt SE</td><td class="hm-swell">→ 1.6m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↖</span> 3kt ESE</td><td class="hm-swell">→ 1.8m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.9mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 5kt SSE</td><td class="hm-swell">→ 1.9m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 12 Q7 9 10 9 Q10 6 14 6 Q18 6 18 10 Q21 10 21 13 Q21 16 18 16 H8 Q5 16 5 13 Q5 12 7 12Z" fill="#78909c"/><line x1="9" y1="18" x2="8" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="18" x2="13" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.7mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">←</span> 7kt E</td><td class="hm-swell">→ 2.1m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 22"><circle cx="10" cy="8" r="3" fill="#FDBC3F" opacity="0.5"/><path d="M7 14 Q7 11 10 11 Q10 8 14 8 Q18 8 18 12 Q21 12 21 15 Q21 18 18 18 H8 Q5 18 5 15 Q5 14 7 14Z" fill="#78909c"/></svg><span class="fc-rain">0.4mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">←</span> 7kt E</td><td class="hm-swell">→ 2.2m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 12 Q7 9 10 9 Q10 6 14 6 Q18 6 18 10 Q21 10 21 13 Q21 16 18 16 H8 Q5 16 5 13 Q5 12 7 12Z" fill="#78909c"/><line x1="9" y1="18" x2="8" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="18" x2="13" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.5mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 5kt S</td><td class="hm-swell">→ 2.4m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 22"><circle cx="10" cy="8" r="3" fill="#FDBC3F" opacity="0.5"/><path d="M7 14 Q7 11 10 11 Q10 8 14 8 Q18 8 18 12 Q21 12 21 15 Q21 18 18 18 H8 Q5 18 5 15 Q5 14 7 14Z" fill="#78909c"/></svg><span class="fc-rain">0.5mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 3kt SW</td><td class="hm-swell">→ 2.4m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 3kt N</td><td class="hm-swell">↗ 2.1m SW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Fri</div>
+        <div class="day-date">Fri 30 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(315 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">14 kt NW</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">25 kt NW</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:71%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">⛈️</span>Showers increasing, thunderstorm</span><span>15–20°C</span><span><span class="rain-pill rain-heavy">9.5 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: SW/W 1.1–1.9m · Seas: <1m → 1-1.5m</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">MOD</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">MOD</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">MOD</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">MOD</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">Thomson</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Longreach</th><th class="hm-bay">Stark</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 3kt NNE</td><td class="hm-swell">↗ 1.8m SW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 4kt NNE</td><td class="hm-swell">↗ 1.7m SW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg><span class="fc-rain">0.1mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 8kt NNE</td><td class="hm-swell">↗ 1.5m SW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 22"><circle cx="10" cy="8" r="3" fill="#FDBC3F" opacity="0.5"/><path d="M7 14 Q7 11 10 11 Q10 8 14 8 Q18 8 18 12 Q21 12 21 15 Q21 18 18 18 H8 Q5 18 5 15 Q5 14 7 14Z" fill="#78909c"/></svg><span class="fc-rain">0.7mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 15kt N</td><td class="hm-swell">↗ 1.4m SW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">2.3mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 22kt NNW</td><td class="hm-swell">→ 1.3m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#455a64"/><polygon points="14,13 11,18 13,18 11,23 17,16 14,16 16,13" fill="#FDBC3F"/><line x1="8" y1="16" x2="7" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="16" x2="18" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">4.0mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 25kt NW</td><td class="hm-swell">→ 1.1m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#455a64"/><polygon points="14,13 11,18 13,18 11,23 17,16 14,16 16,13" fill="#FDBC3F"/><line x1="8" y1="16" x2="7" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="16" x2="18" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.8mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 25kt NW</td><td class="hm-swell">→ 1.2m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.6mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 20kt NW</td><td class="hm-swell">→ 1.5m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-comfortable">
+      <div class="day-header">
+        <div class="day-name">Sat</div>
+        <div class="day-date">Sat 31 May</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(247.5 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">23 kt WSW</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">34 kt WNW</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:97%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">🌪️</span>Possible storm, very windy</span><span>15–20°C</span><span><span class="rain-pill rain-heavy">12.8 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: W/WSW 1.7–2.5m · Seas: 2-3m (est.)</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#FDBC3F;color:#5A4200;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">MOD</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">ROUGH</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Thomson</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">Longreach</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Marjorie</th><th class="hm-bay">Geordie</th><th class="hm-bay">Stark</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">↓</span> 14kt NNW</td><td class="hm-swell">→ 1.8m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.9mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 17kt NNW</td><td class="hm-swell">→ 1.9m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">2.8mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 25kt NW</td><td class="hm-swell">→ 2.1m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#546e7a"/><line x1="7" y1="16" x2="5.5" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/><line x1="11" y1="16" x2="9.5" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="16" x2="13.5" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/><line x1="19" y1="16" x2="17.5" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/></svg><span class="fc-rain">4.2mm</span></td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↘</span> 32kt NW</td><td class="hm-swell">→ 2.2m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#455a64"/><polygon points="14,13 11,18 13,18 11,23 17,16 14,16 16,13" fill="#FDBC3F"/><line x1="8" y1="16" x2="7" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/><line x1="19" y1="16" x2="18" y2="20" stroke="#0288d1" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">3.0mm</span></td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 34kt WNW</td><td class="hm-swell">→ 2.4m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 10 Q7 7 10 7 Q10 4 14 4 Q18 4 18 8 Q21 8 21 11 Q21 14 18 14 H8 Q5 14 5 11 Q5 10 7 10Z" fill="#37474f"/><polygon points="14,12 10,18 13,18 10,24 18,15 14,15 17,12" fill="#ff9800"/><line x1="7" y1="16" x2="5" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="16" x2="18" y2="21" stroke="#0288d1" stroke-width="2" stroke-linecap="round"/></svg><span class="fc-rain">1.3mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 32kt W</td><td class="hm-swell">→ 2.5m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.6mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 25kt WSW</td><td class="hm-swell">→ 2.4m W</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 19kt WSW</td><td class="hm-swell">→ 2.3m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="day-card tier-border-calm">
+      <div class="day-header">
+        <div class="day-name">Sun</div>
+        <div class="day-date">Sun 1 Jun</div>
+      </div>
+      <div class="day-summary">
+        <div class="compass-row">
+          <svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="38" fill="#E6F8F8" stroke="#09768D" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="50" y="16" text-anchor="middle" fill="#09768D" font-size="10" font-weight="600">N</text>
+  <g transform="rotate(202.5 50 50)"><path d="M 50 20 L 42 54 L 50 48 L 58 54 Z" fill="#e74c3c" opacity="0.9"/></g>
+</svg>
+          <div class="wind-stats">
+            <div class="stat-row"><span class="stat-label">Avg</span><span class="stat-value">19 kt SSW</span></div>
+            <div class="stat-row"><span class="stat-label">Peak</span><span class="stat-value">28 kt SW</span></div>
+          </div>
+        </div>
+        <div class="wind-bar-wrap">
+          <div class="wind-bar-bg"><div class="wind-bar-fill" style="width:80%"></div></div>
+          <div class="wind-bar-marks"><span style="left:0%">0</span><span style="left:28.6%">10</span><span style="left:57.1%">20</span><span style="left:85.7%">30</span><span style="left:100%">35+</span></div>
+        </div>
+        <div class="weather-row"><span><span class="weather-icon">🌧️</span>Showers, windy</span><span>15–19°C</span><span><span class="rain-pill rain-med">5.8 mm</span></span></div>
+        <div class="marine-line">🌊 Swell: WSW 2.0–2.5m · Seas: 1.5-2.5m (est.)</div>
+      </div>
+      <div class="bay-ratings">
+        <div class="bay-ratings-header">Bay Rankings (24hr avg)</div>
+        <div class="bay-strip">
+        <div class="bay-chip" style="background:#27ae60;color:#fff;"><span class="bay-rank">#1</span><span class="bay-chip-name">⚓ Thomson</span><span class="bay-chip-tier">CALM</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#2</span><span class="bay-chip-name">⚓ Longreach</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#3</span><span class="bay-chip-name">⚓ N.Neck</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#00B8BE;color:#073746;"><span class="bay-rank">#4</span><span class="bay-chip-name">⚓ Geordie</span><span class="bay-chip-tier">COMFY</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#5</span><span class="bay-chip-name">⚓ Catherine</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#6</span><span class="bay-chip-name">⚓ Porpoise</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#7</span><span class="bay-chip-name">⚓ Stark</span><span class="bay-chip-tier">ROUGH</span></div>
+        <div class="bay-chip" style="background:#D35D4F;color:#fff;"><span class="bay-rank">#8</span><span class="bay-chip-name">⚓ Marjorie</span><span class="bay-chip-tier">ROUGH</span></div>
+        </div>
+      </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-header">Bay Conditions — 3-Hour Periods (wind + swell factored)</div>
+      <div class="heatmap-scroll">
+      <table class="heatmap">
+        <thead><tr><th class="hm-time">Time</th><th class="hm-wind">Wind</th><th class="hm-swell-h">Swell</th><th class="hm-fc-h">Forecast</th><th class="hm-bay">Thomson</th><th class="hm-bay">Longreach</th><th class="hm-bay">N.Neck</th><th class="hm-bay">Geordie</th><th class="hm-bay">Catherine</th><th class="hm-bay">Porpoise</th><th class="hm-bay">Stark</th><th class="hm-bay">Marjorie</th></tr></thead>
+        <tbody>
+      <tr class="hm-night"><td class="hm-time">00:00–03:00</td><td class="hm-wind"><span class="hm-arrow">→</span> 14kt WSW</td><td class="hm-swell">→ 2.2m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.4mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">03:00–06:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 18kt WSW</td><td class="hm-swell">→ 2.1m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 1 Q9 1 7.5 3 Q6 5 7 7 Q5 7 5.5 4 Q8 2 12 1Z" fill="#78909c" opacity="0.5"/><path d="M9 12 Q9 9 12 9 Q12 6 16 6 Q20 6 20 10 Q23 10 23 13 Q23 16 20 16 H10 Q7 16 7 13 Q7 12 9 12Z" fill="#546e7a"/><line x1="10" y1="18" x2="9" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="15" y1="18" x2="14" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.3mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">06:00–09:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 24kt WSW</td><td class="hm-swell">→ 2.0m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">2.1mm</span></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">09:00–12:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 27kt SW</td><td class="hm-swell">→ 2.1m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 12 Q7 9 10 9 Q10 6 14 6 Q18 6 18 10 Q21 10 21 13 Q21 16 18 16 H8 Q5 16 5 13 Q5 12 7 12Z" fill="#78909c"/><line x1="9" y1="18" x2="8" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="18" x2="13" y2="21" stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">1.0mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">12:00–15:00</td><td class="hm-wind"><span class="hm-arrow">↗</span> 28kt SSW</td><td class="hm-swell">→ 2.3m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 20"><path d="M6 13 Q6 10 9 10 Q9 7 13 7 Q17 7 17 11 Q20 11 20 14 Q20 17 17 17 H7 Q4 17 4 14 Q4 13 6 13Z" fill="#607d8b"/></svg><span class="fc-rain">0.3mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">15:00–18:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 25kt SSW</td><td class="hm-swell">→ 2.4m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 26 24"><path d="M7 11 Q7 8 10 8 Q10 5 14 5 Q18 5 18 9 Q21 9 21 12 Q21 15 18 15 H8 Q5 15 5 12 Q5 11 7 11Z" fill="#607d8b"/><line x1="8" y1="17" x2="7" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="11" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="17" x2="15" y2="21" stroke="#29b6f6" stroke-width="1.5" stroke-linecap="round"/></svg><span class="fc-rain">0.7mm</span></td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr><td class="hm-time">18:00–21:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 18kt SSW</td><td class="hm-swell">→ 2.5m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 28 24"><path d="M12 2 Q9 2 7.5 4 Q6 6 7 8 Q5 8 5.5 5 Q8 3 12 2Z" fill="#90a4ae" opacity="0.6"/><path d="M9 15 Q9 12 12 12 Q12 9 16 9 Q20 9 20 13 Q23 13 23 16 Q23 19 20 19 H10 Q7 19 7 16 Q7 15 9 15Z" fill="#607d8b"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+      <tr class="hm-night"><td class="hm-time">21:00–24:00</td><td class="hm-wind"><span class="hm-arrow">↑</span> 12kt SSW</td><td class="hm-swell">→ 2.4m WSW</td><td class="hm-fc"><svg class="wx-icon" viewBox="0 0 24 24"><path d="M12 3 Q8 3 6 6 Q4 9 5 12 Q6 16 10 18 Q13 19 16 18 Q12 17 11 14 Q10 10 12 7 Q13 5 16 4 Q14 3 12 3Z" fill="#b0bec5"/></svg></td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#27ae60;color:#fff;">CALM</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#00B8BE;color:#073746;">COMFY</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#FDBC3F;color:#5A4200;">MOD</td><td class="hm-cell" style="background:#D35D4F;color:#fff;">ROUGH</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <h2>Bay Shelter Guide — Wind &amp; Swell Direction</h2>
+    <p>Each bay's comfort depends on wind direction and swell exposure. Tier ratings combine shelter-adjusted wind + swell penalty per hour.</p>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Geordie Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">Small north-facing bay. Good shelter from S/SE, exposed to N/NW.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: SE, SSE, S</span>
+          <span class="dir-worst">Wind exposed: N, NW, NNW</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: S, SE</span>
+          <span class="dir-worst">Swell exposed: N, NW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Thomson Bay</div>
+        <div class="guide-card-type">Moorings · 33 moorings · Grey/Purple/Blue</div>
+        <div class="guide-card-desc">Main settlement bay, east-facing. Island blocks W/SW/S winds & swell.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: SW, WSW, W</span>
+          <span class="dir-worst">Wind exposed: NE, ENE, E</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: W, WSW</span>
+          <span class="dir-worst">Swell exposed: NE, E</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Longreach Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">North-facing bay east of Geordie. Exposed to N/NW swells.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: SE, SSE, S</span>
+          <span class="dir-worst">Wind exposed: N, NNE, NW</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: S, SE</span>
+          <span class="dir-worst">Swell exposed: N, NW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Catherine Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">South-facing bay on south coast. Well sheltered from N/NW, exposed to S/SW swell.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: N, NNE, NW</span>
+          <span class="dir-worst">Wind exposed: S, SSW, SSE</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: N, NW</span>
+          <span class="dir-worst">Swell exposed: S, SW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Porpoise Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">South-facing bay. Excellent shelter from N/NW but exposed to southerly swell.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: N, NNE, NW</span>
+          <span class="dir-worst">Wind exposed: S, SSW, SSE</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: N, NW</span>
+          <span class="dir-worst">Swell exposed: S, SW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Narrow Neck</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">North-facing bay between Geordie and Longreach. Exposed to N/NW winds.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: SE, SSE, S</span>
+          <span class="dir-worst">Wind exposed: N, NNW, NNE</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: S, SE</span>
+          <span class="dir-worst">Swell exposed: N, NW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Stark Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">West-facing bay. Sheltered from E/SE but fully exposed to westerly swell.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: ENE, E, ESE</span>
+          <span class="dir-worst">Wind exposed: WSW, W, WNW</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: E, NE</span>
+          <span class="dir-worst">Swell exposed: W, WSW</span>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-card-name">⚓ Marjorie Bay</div>
+        <div class="guide-card-type">Moorings · 4 moorings · Grey</div>
+        <div class="guide-card-desc">Far west, south-facing. Sheltered from N/NE, very exposed to W/SW swell.</div>
+        <div class="guide-dirs">
+          <span class="dir-best">Wind shelter: NNE, NE, N</span>
+          <span class="dir-worst">Wind exposed: SW, WSW, SSW</span>
+        </div>
+        <div class="guide-dirs" style="margin-top:4px;">
+          <span class="dir-best">Swell shelter: NE, N</span>
+          <span class="dir-worst">Swell exposed: WSW, SW</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="threshold-section">
+    <h2>Mooring Comfort Thresholds — Effective Wind Scale</h2>
+    <p>Effective wind = raw wind × shelter factor + swell penalty (swell_shelter × swell_m × 4). This is what you actually feel at the mooring.</p>
+    <div style="margin-bottom: 14px;">
+      <div style="position: relative; height: 28px; border-radius: 6px; overflow: hidden; background: linear-gradient(90deg, #27ae60 0%, #27ae60 25%, #00B8BE 25%, #00B8BE 50%, #FDBC3F 50%, #FDBC3F 75%, #D35D4F 75%, #D35D4F 100%);">
+        <div style="position: absolute; left: 12.5%; top: 50%; transform: translate(-50%, -50%); color: #fff; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Calm</div>
+        <div style="position: absolute; left: 37.5%; top: 50%; transform: translate(-50%, -50%); color: #073746; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Comfortable</div>
+        <div style="position: absolute; left: 62.5%; top: 50%; transform: translate(-50%, -50%); color: #5A4200; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Moderate</div>
+        <div style="position: absolute; left: 87.5%; top: 50%; transform: translate(-50%, -50%); color: #fff; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Rough</div>
+      </div>
+      <div style="position: relative; height: 18px; margin-top: 4px; font-size: 11px; color: #706356; font-weight: 600;">
+        <span style="position: absolute; left: 0%; transform: translateX(-50%);">0 kt</span>
+        <span style="position: absolute; left: 25%; transform: translateX(-50%);">7 kt</span>
+        <span style="position: absolute; left: 50%; transform: translateX(-50%);">12 kt</span>
+        <span style="position: absolute; left: 75%; transform: translateX(-50%);">18 kt</span>
+        <span style="position: absolute; left: 100%; transform: translateX(-50%);">25+ kt</span>
+      </div>
+    </div>
+    <div class="threshold-grid">
+      <div class="threshold-card" style="background:#27ae60;">
+        <div class="label">Calm</div>
+        <div class="value">≤ 7 kt</div>
+        <div class="desc">Flat water. Sleep like a baby at the mooring.</div>
+      </div>
+      <div class="threshold-card" style="background:#00B8BE; color:#073746;">
+        <div class="label" style="color:#073746;">Comfortable</div>
+        <div class="value">8–12 kt</div>
+        <div class="desc" style="color:#073746;">Light chop. Fine for swimming &amp; tenders.</div>
+      </div>
+      <div class="threshold-card" style="background:#FDBC3F; color:#5A4200;">
+        <div class="label" style="color:#5A4200;">Moderate</div>
+        <div class="value">13–18 kt</div>
+        <div class="desc" style="color:#5A4200;">Noticeable motion. Experienced crews only.</div>
+      </div>
+      <div class="threshold-card" style="background:#D35D4F;">
+        <div class="label">Rough</div>
+        <div class="value">19+ kt</div>
+        <div class="desc">Uncomfortable. Consider relocating or staying ashore.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <strong>Verify morning-of:</strong>
+    <a href="https://wind.willyweather.com.au/wa/perth/rottnest-island.html" target="_blank">WillyWeather Rottnest wind</a> ·
+    <a href="https://www.willyweather.com.au/wa/perth/rottnest-island.html" target="_blank">WillyWeather Rottnest weather</a> ·
+    <a href="https://www.rottnestisland.com/visit/getting-there/boating" target="_blank">Rottnest Island Authority — Boating</a> ·
+    <a href="https://www.bom.gov.au/wa/forecasts/perth-local-waters.shtml" target="_blank">BoM Perth Local Waters</a>
+    <br><br>
+    <em>Forecast refreshed Mon 26 May 2026, 20:15 AWST · wind speeds in knots · bay tiers use shelter-adjusted effective wind + hourly swell penalty</em>
+    <div class="footer-logos">
+      <a href="https://www.superiorit.com.au/" target="_blank" title="Superior IT"><img src="https://cdn.prod.website-files.com/6389672804aa2669e29a4baa/693fc6f82bbe7d91a2dd0751_Asset%2024.svg" alt="Superior IT"></a>
+      <span class="sep">·</span>
+      <a href="https://www.defendersuite.com/" target="_blank" title="DefenderSuite"><img src="https://cdn.prod.website-files.com/6389672804aa2669e29a4baa/69b7d67b6fc251b14e53a2cf_01%20DefenderSuite%20Logo.png" alt="DefenderSuite"></a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
